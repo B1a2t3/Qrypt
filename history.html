@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>History | Qrypt</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo" class="bouncing-logo">
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+            <h1>Qrypt</h1>
+        </div>
+        <button class="hamburger-menu">☰</button>
+    </header>
+
+    <!-- Hamburger Menu -->
+    <nav class="side-menu">
+        <button class="close-menu">×</button>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="generator.html">QR Generator</a></li>
+            <li><a href="scanner.html">QR Scanner</a></li>
+            <li><a href="help.html">Help</a></li>
+            <li><a href="usage.html">Usage</a></li>
+            <li><a href="history.html" class="active">History</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li>
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="history-page">
+        <h2>Your QR Code History</h2>
+        <p class="page-description">View all your previously generated and scanned QR codes. Your history is stored locally on your device and can be cleared at any time. This feature helps you keep track of your QR code activities.</p>
+        
+        <div class="history-controls">
+            <button id="clear-history" class="glowing-btn">Clear All History</button>
+            <div class="filter-options">
+                <label>
+                    <input type="radio" name="filter" value="all" checked> Show All
+                </label>
+                <label>
+                    <input type="radio" name="filter" value="generated"> Generated
+                </label>
+                <label>
+                    <input type="radio" name="filter" value="scanned"> Scanned
+                </label>
+            </div>
+        </div>
+        
+        <div class="history-list">
+            <!-- History items will be dynamically inserted here -->
+            <div class="empty-state">
+                <p>Your history is empty. Generate or scan QR codes to see them appear here.</p>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Buttons -->
+    <div class="chat-buttons">
+        <a href="https://wa.me/07012344763" class="whatsapp-btn">WhatsApp</a>
+        <a href="zangi://1073484140" class="zangi-btn">Zangi</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Qrypt. All rights reserved.</p>
+    </footer>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+        <span>Install Qrypt App</span>
+        <button class="install-btn">Install</button>
+        <button class="cancel-install">×</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // History page specific functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const historyList = document.querySelector('.history-list');
+            const clearBtn = document.getElementById('clear-history');
+            const filters = document.querySelectorAll('input[name="filter"]');
+            
+            // Load history from localStorage
+            function loadHistory(filter = 'all') {
+                const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                historyList.innerHTML = '';
+                
+                if (history.length === 0) {
+                    historyList.innerHTML = '<div class="empty-state"><p>Your history is empty. Generate or scan QR codes to see them appear here.</p></div>';
+                    return;
+                }
+                
+                const filteredHistory = filter === 'all' 
+                    ? history 
+                    : history.filter(item => item.type === filter + 'd');
+                
+                filteredHistory.forEach((item, index) => {
+                    const historyItem = document.createElement('div');
+                    historyItem.className = 'history-item';
+                    historyItem.innerHTML = `
+                        <div class="item-type ${item.type}">
+                            ${item.type === 'generated' ? 'Generated' : 'Scanned'}
+                        </div>
+                        <div class="item-content">
+                            ${item.data.length > 50 ? item.data.substring(0, 50) + '...' : item.data}
+                        </div>
+                        <div class="item-time">
+                            ${new Date(item.timestamp).toLocaleString()}
+                        </div>
+                        <button class="item-action" data-index="${index}">
+                            ${item.type === 'generated' ? 'Regenerate' : 'Rescan'}
+                        </button>
+                        <button class="item-delete" data-index="${index}">×</button>
+                    `;
+                    historyList.appendChild(historyItem);
+                });
+            }
+            
+            // Clear history
+            clearBtn.addEventListener('click', () => {
+                if (confirm('Are you sure you want to clear all history?')) {
+                    localStorage.removeItem('qrHistory');
+                    loadHistory();
+                }
+            });
+            
+            // Filter history
+            filters.forEach(filter => {
+                filter.addEventListener('change', () => {
+                    loadHistory(filter.value);
+                });
+            });
+            
+            // Initial load
+            loadHistory();
+        });
+    </script>
+</body>
+</html>
