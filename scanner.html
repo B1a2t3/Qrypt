@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Scanner | Qrypt</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo" class="bouncing-logo">
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+            <h1>Qrypt</h1>
+        </div>
+        <button class="hamburger-menu">☰</button>
+    </header>
+
+    <!-- Hamburger Menu -->
+    <nav class="side-menu">
+        <button class="close-menu">×</button>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="generator.html">QR Generator</a></li>
+            <li><a href="scanner.html" class="active">QR Scanner</a></li>
+            <li><a href="help.html">Help</a></li>
+            <li><a href="usage.html">Usage</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li>
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="scanner-page">
+        <h2>QR Code Scanner</h2>
+        <p class="page-description">Scan any QR code using your device's camera or by uploading an image. Our scanner quickly decodes QR codes to reveal URLs, text, contact information, and more. Perfect for quickly accessing information from physical QR codes.</p>
+        
+        <div class="scanner-container">
+            <div class="scanner-options">
+                <button id="scan-btn" class="glowing-btn">Use Camera</button>
+                <input type="file" id="upload-btn" accept="image/*" style="display: none;">
+                <label for="upload-btn" class="glowing-btn">Upload Image</label>
+                <label class="flash-toggle">
+                    <input type="checkbox" id="flash-toggle">
+                    <span>Flashlight</span>
+                </label>
+            </div>
+            
+            <div class="scanner-view">
+                <video id="camera-feed" playsinline style="display: none;"></video>
+                <div class="scanner-overlay" style="display: none;">
+                    <div class="scan-line"></div>
+                </div>
+                <div class="scanning-text">SCANNING</div>
+            </div>
+            
+            <div class="result-section">
+                <div id="scan-result" style="display: none;"></div>
+                <div class="action-buttons">
+                    <button id="copy-btn" class="glowing-btn" style="display: none;">Copy Text</button>
+                    <button id="open-btn" class="glowing-btn" style="display: none;">Open Link</button>
+                    <button id="share-btn" class="glowing-btn" style="display: none;">Share</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Chat Buttons -->
+    <div class="chat-buttons">
+        <a href="https://wa.me/07012344763" class="whatsapp-btn">WhatsApp</a>
+        <a href="zangi://1073484140" class="zangi-btn">Zangi</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Qrypt. All rights reserved.</p>
+    </footer>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+        <span>Install Qrypt App</span>
+        <button class="install-btn">Install</button>
+        <button class="cancel-install">×</button>
+    </div>
+
+    <script src="script.js"></script>
+    <!-- QR Scanner Library -->
+    <script src="https://cdn.jsdelivr.net/npm/jsqr@1.4.0/dist/jsQR.min.js"></script>
+</body>
+</html>
