@@ -183,4 +183,96 @@
                     <div class="faq-item">
                         <div class="faq-question">Can I clear my history?</div>
                         <div class="faq-answer">
-                            <p>Yes, visit the History page and click "Clear All History" to remove all your generated and scanned
+                            <p>Yes, visit the History page and click "Clear All History" to remove all your generated and scanned QR code records.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Do you use cookies?</div>
+                        <div class="faq-answer">
+                            <p>We only use essential cookies for site functionality. Your preferences (like dark mode) are stored locally on your device.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+            
+            <section class="faq-category">
+                <h3>Troubleshooting</h3>
+                <div class="faq-items">
+                    <div class="faq-item">
+                        <div class="faq-question">Why do I see ads before generating/scanning?</div>
+                        <div class="faq-answer">
+                            <p>The brief ad display helps support the free service. You can skip it after a few seconds.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">The page isn't loading properly</div>
+                        <div class="faq-answer">
+                            <p>Try refreshing the page or clearing your browser cache. Ensure you're using an updated browser.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">Dark mode isn't working</div>
+                        <div class="faq-answer">
+                            <p>Try toggling the switch again or clear your browser's local storage if the issue persists.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">I can't find my downloaded QR code</div>
+                        <div class="faq-answer">
+                            <p>Check your device's downloads folder. The file will be named "qrypt-qrcode.png" by default.</p>
+                        </div>
+                    </div>
+                    <div class="faq-item">
+                        <div class="faq-question">How do I contact support?</div>
+                        <div class="faq-answer">
+                            <p>Use the WhatsApp or Zangi chat buttons in the bottom right corner of any page to reach our support team.</p>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Chat Buttons -->
+    <div class="chat-buttons">
+        <a href="https://wa.me/07012344763" class="whatsapp-btn">WhatsApp</a>
+        <a href="zangi://1073484140" class="zangi-btn">Zangi</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Qrypt. All rights reserved.</p>
+    </footer>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+        <span>Install Qrypt App</span>
+        <button class="install-btn">Install</button>
+        <button class="cancel-install">×</button>
+    </div>
+
+    <script src="script.js"></script>
+    <script>
+        // FAQ page specific functionality
+        document.addEventListener('DOMContentLoaded', () => {
+            const faqQuestions = document.querySelectorAll('.faq-question');
+            
+            faqQuestions.forEach(question => {
+                question.addEventListener('click', () => {
+                    const answer = question.nextElementSibling;
+                    const isOpen = answer.style.display === 'block';
+                    
+                    // Close all answers first
+                    document.querySelectorAll('.faq-answer').forEach(ans => {
+                        ans.style.display = 'none';
+                    });
+                    
+                    // Toggle the clicked one
+                    answer.style.display = isOpen ? 'none' : 'block';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
