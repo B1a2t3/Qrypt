@@ -37,181 +37,8 @@ if (currentTheme) {
     themeToggle.checked = currentTheme === 'dark';
 }
 
-// Ad Popup Functionality
-function showAdPopup() {
-    const adPopup = document.createElement('div');
-    adPopup.className = 'ad-popup';
-    adPopup.innerHTML = `
-        <div class="ad-content">
-            <h3>Advertisement</h3>
-            <p>Please wait while we load your content...</p>
-            <div class="countdown">5</div>
-            <button class="skip-ad">Skip Ad</button>
-        </div>
-    `;
-    document.body.appendChild(adPopup);
-    
-    let count = 5;
-    const countdown = adPopup.querySelector('.countdown');
-    const timer = setInterval(() => {
-        count--;
-        countdown.textContent = count;
-        if (count <= 0) {
-            clearInterval(timer);
-            adPopup.remove();
-            // Proceed with tool functionality
-        }
-    }, 1000);
-    
-    adPopup.querySelector('.skip-ad').addEventListener('click', () => {
-        clearInterval(timer);
-        adPopup.remove();
-        // Proceed with tool functionality
-    });
-}
-
-// PWA Installation
-let deferredPrompt;
-
-window.addEventListener('beforeinstallprompt', (e) => {
-    e.preventDefault();
-    deferredPrompt = e;
-    installPrompt.style.display = 'flex';
-});
-
-installBtn.addEventListener('click', async () => {
-    if (deferredPrompt) {
-        deferredPrompt.prompt();
-        const { outcome } = await deferredPrompt.userChoice;
-        if (outcome === 'accepted') {
-            installPrompt.style.display = 'none';
-        }
-        deferredPrompt = null;
-    }
-});
-
-cancelInstall.addEventListener('click', () => {
-    installPrompt.style.display = 'none';
-});
-
-// Service Worker Registration
-if ('serviceWorker' in navigator) {
-    window.addEventListener('load', () => {
-        navigator.serviceWorker.register('service-worker.js')
-            .then(registration => {
-                console.log('ServiceWorker registration successful');
-            })
-            .catch(err => {
-                console.log('ServiceWorker registration failed: ', err);
-            });
-    });
-}
-
-// QR Code Generator Page Specific Code
-if (window.location.pathname.includes('generator.html')) {
-    const generateBtn = document.getElementById('generate-btn');
-    const qrInput = document.getElementById('qr-input');
-    const qrResult = document.getElementById('qr-result');
-    const downloadBtn = document.getElementById('download-btn');
-    const shareBtn = document.getElementById('share-btn');
-    
-    generateBtn.addEventListener('click', () => {
-        showAdPopup();
-        setTimeout(() => {
-            const text = qrInput.value.trim();
-            if (text) {
-                // In a real implementation, you would generate QR code here
-                // For example using a library like QRCode.js
-                qrResult.innerHTML = `
-                    <div class="generating-text">GENERATING</div>
-                    <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}" alt="QR Code">
-                `;
-                downloadBtn.style.display = 'block';
-                shareBtn.style.display = 'block';
-                
-                // Save to history
-                const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-                history.push({
-                    type: 'generated',
-                    data: text,
-                    timestamp: new Date().toISOString()
-                });
-                localStorage.setItem('qrHistory', JSON.stringify(history));
-            }
-        }, 5000);
-    });
-}
-
-// QR Code Scanner Page Specific Code
-if (window.location.pathname.includes('scanner.html')) {
-    const scanBtn = document.getElementById('scan-btn');
-    const uploadBtn = document.getElementById('upload-btn');
-    const cameraFeed = document.getElementById('camera-feed');
-    const scanResult = document.getElementById('scan-result');
-    const copyBtn = document.getElementById('copy-btn');
-    const openBtn = document.getElementById('open-btn');
-    const shareBtn = document.getElementById('share-btn');
-    const flashToggle = document.getElementById('flash-toggle');
-    
-    scanBtn.addEventListener('click', () => {
-        showAdPopup();
-        setTimeout(() => {
-            // In a real implementation, you would access the camera here
-            // For example using the MediaDevices API
-            navigator.mediaDevices.getUserMedia({ video: true })
-                .then(stream => {
-                    cameraFeed.srcObject = stream;
-                    // Add scanner animation overlay
-                    cameraFeed.insertAdjacentHTML('afterend', `
-                        <div class="scanner-overlay">
-                            <div class="scan-line"></div>
-                        </div>
-                    `);
-                })
-                .catch(err => {
-                    console.error('Error accessing camera:', err);
-                });
-        }, 5000);
-    });
-    
-    uploadBtn.addEventListener('change', (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            showAdPopup();
-            setTimeout(() => {
-                // In a real implementation, you would process the QR code here
-                // For example using a library like jsQR
-                const reader = new FileReader();
-                reader.onload = (event) => {
-                    // Simulate QR code decoding
-                    setTimeout(() => {
-                        scanResult.textContent = "https://example.com/decoded-qr";
-                        scanResult.style.display = 'block';
-                        copyBtn.style.display = 'block';
-                        openBtn.style.display = 'block';
-                        shareBtn.style.display = 'block';
-                        
-                        // Save to history
-                        const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
-                        history.push({
-                            type: 'scanned',
-                            data: "https://example.com/decoded-qr",
-                            timestamp: new Date().toISOString()
-                        });
-                        localStorage.setItem('qrHistory', JSON.stringify(history));
-                    }, 1000);
-                };
-                reader.readAsDataURL(file);
-            }, 5000);
-        }
-    });
-}
-
 // QR Code Generator Functionality
 function generateQRCode(text) {
-    // In a real implementation, you would use a QR code library
-    // For example: new QRCode(document.getElementById("qr-result"), text);
-    // This is a simplified version using an external API
     const qrResult = document.getElementById('qr-result');
     qrResult.innerHTML = `
         <img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}" alt="QR Code">
@@ -251,27 +78,34 @@ function initQRScanner() {
     const flashToggle = document.getElementById('flash-toggle');
     
     let stream = null;
+    let scanning = false;
     
     // Camera access
     document.getElementById('scan-btn').addEventListener('click', async () => {
-        try {
-            stream = await navigator.mediaDevices.getUserMedia({ 
-                video: { 
-                    facingMode: 'environment',
-                    torch: flashToggle.checked
-                } 
-            });
-            video.srcObject = stream;
-            video.style.display = 'block';
-            document.querySelector('.scanner-overlay').style.display = 'block';
-            video.play();
-            
-            // Start scanning loop
-            scanQRCode();
-        } catch (err) {
-            console.error('Error accessing camera:', err);
-            alert('Could not access camera. Please check permissions.');
-        }
+        if (scanning) return;
+        
+        showAdPopup(async () => {
+            try {
+                scanning = true;
+                stream = await navigator.mediaDevices.getUserMedia({ 
+                    video: { 
+                        facingMode: 'environment',
+                        torch: flashToggle.checked
+                    } 
+                });
+                video.srcObject = stream;
+                video.style.display = 'block';
+                document.querySelector('.scanner-overlay').style.display = 'block';
+                video.play();
+                
+                // Start scanning loop
+                scanQRCode();
+            } catch (err) {
+                console.error('Error accessing camera:', err);
+                alert('Could not access camera. Please check permissions.');
+                scanning = false;
+            }
+        });
     });
     
     // Flash toggle
@@ -290,26 +124,35 @@ function initQRScanner() {
     document.getElementById('upload-btn').addEventListener('change', (e) => {
         const file = e.target.files[0];
         if (file) {
-            const reader = new FileReader();
-            reader.onload = (event) => {
-                const img = new Image();
-                img.onload = () => {
-                    try {
-                        // In a real implementation, you would use jsQR or similar
-                        // const code = jsQR(imageData, width, height);
-                        // For demo purposes, we'll simulate a result
-                        setTimeout(() => {
-                            const simulatedResult = "https://example.com/decoded-qr";
-                            displayScanResult(simulatedResult);
-                        }, 1000);
-                    } catch (err) {
-                        console.error('Error decoding QR:', err);
-                        alert('Could not decode QR code. Please try another image.');
-                    }
+            showAdPopup(() => {
+                const reader = new FileReader();
+                reader.onload = (event) => {
+                    const img = new Image();
+                    img.onload = () => {
+                        try {
+                            const canvas = document.createElement('canvas');
+                            canvas.width = img.width;
+                            canvas.height = img.height;
+                            const ctx = canvas.getContext('2d');
+                            ctx.drawImage(img, 0, 0);
+                            
+                            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+                            const code = jsQR(imageData.data, imageData.width, imageData.height);
+                            
+                            if (code) {
+                                displayScanResult(code.data);
+                            } else {
+                                alert('Could not decode QR code. Please try another image.');
+                            }
+                        } catch (err) {
+                            console.error('Error decoding QR:', err);
+                            alert('Could not decode QR code. Please try another image.');
+                        }
+                    };
+                    img.src = event.target.result;
                 };
-                img.src = event.target.result;
-            };
-            reader.readAsDataURL(file);
+                reader.readAsDataURL(file);
+            });
         }
     });
     
@@ -327,13 +170,11 @@ function initQRScanner() {
         ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
         
         try {
-            // In a real implementation, you would use jsQR here
-            // const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-            // const code = jsQR(imageData.data, imageData.width, imageData.height);
-            // For demo purposes, we'll simulate a result after some time
-            if (Math.random() < 0.01) { // 1% chance per frame to "detect" a QR
-                const simulatedResult = "https://example.com/decoded-qr";
-                displayScanResult(simulatedResult);
+            const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+            const code = jsQR(imageData.data, imageData.width, imageData.height);
+            
+            if (code) {
+                displayScanResult(code.data);
                 stopScanner();
             } else {
                 requestAnimationFrame(scanQRCode);
@@ -391,6 +232,7 @@ function initQRScanner() {
     }
     
     function stopScanner() {
+        scanning = false;
         if (stream) {
             stream.getTracks().forEach(track => track.stop());
             video.srcObject = null;
@@ -399,6 +241,39 @@ function initQRScanner() {
     
     // Clean up when leaving page
     window.addEventListener('beforeunload', stopScanner);
+}
+
+// Ad Popup Functionality
+function showAdPopup(callback) {
+    const adPopup = document.createElement('div');
+    adPopup.className = 'ad-popup';
+    adPopup.innerHTML = `
+        <div class="ad-content">
+            <h3>Advertisement</h3>
+            <p>Please wait while we load your content...</p>
+            <div class="countdown">5</div>
+            <button class="skip-ad">Skip Ad</button>
+        </div>
+    `;
+    document.body.appendChild(adPopup);
+    
+    let count = 5;
+    const countdown = adPopup.querySelector('.countdown');
+    const timer = setInterval(() => {
+        count--;
+        countdown.textContent = count;
+        if (count <= 0) {
+            clearInterval(timer);
+            adPopup.remove();
+            if (callback) callback();
+        }
+    }, 1000);
+    
+    adPopup.querySelector('.skip-ad').addEventListener('click', () => {
+        clearInterval(timer);
+        adPopup.remove();
+        if (callback) callback();
+    });
 }
 
 // Initialize appropriate functionality for each page
@@ -487,37 +362,90 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         });
     }
-});
-
-// Ad Popup Functionality
-function showAdPopup(callback) {
-    const adPopup = document.createElement('div');
-    adPopup.className = 'ad-popup';
-    adPopup.innerHTML = `
-        <div class="ad-content">
-            <h3>Advertisement</h3>
-            <p>Please wait while we load your content...</p>
-            <div class="countdown">5</div>
-            <button class="skip-ad">Skip Ad</button>
-        </div>
-    `;
-    document.body.appendChild(adPopup);
     
-    let count = 5;
-    const countdown = adPopup.querySelector('.countdown');
-    const timer = setInterval(() => {
-        count--;
-        countdown.textContent = count;
-        if (count <= 0) {
-            clearInterval(timer);
-            adPopup.remove();
-            if (callback) callback();
+    // Initialize history page
+    if (window.location.pathname.includes('history.html')) {
+        const historyList = document.querySelector('.history-list');
+        const clearBtn = document.getElementById('clear-history');
+        const filters = document.querySelectorAll('input[name="filter"]');
+        
+        function loadHistory(filter = 'all') {
+            const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+            historyList.innerHTML = '';
+            
+            if (history.length === 0) {
+                historyList.innerHTML = '<div class="empty-state"><p>Your history is empty. Generate or scan QR codes to see them appear here.</p></div>';
+                return;
+            }
+            
+            const filteredHistory = filter === 'all' 
+                ? history 
+                : history.filter(item => item.type === filter + 'd');
+            
+            filteredHistory.forEach((item, index) => {
+                const historyItem = document.createElement('div');
+                historyItem.className = 'history-item';
+                historyItem.innerHTML = `
+                    <div class="item-type ${item.type}">
+                        ${item.type === 'generated' ? 'Generated' : 'Scanned'}
+                    </div>
+                    <div class="item-content">
+                        ${item.data.length > 50 ? item.data.substring(0, 50) + '...' : item.data}
+                    </div>
+                    <div class="item-time">
+                        ${new Date(item.timestamp).toLocaleString()}
+                    </div>
+                    <button class="item-action" data-index="${index}">
+                        ${item.type === 'generated' ? 'Regenerate' : 'Rescan'}
+                    </button>
+                    <button class="item-delete" data-index="${index}">×</button>
+                `;
+                historyList.appendChild(historyItem);
+            });
+            
+            // Add event listeners to action buttons
+            document.querySelectorAll('.item-action').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.target.getAttribute('data-index');
+                    const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                    const item = history[index];
+                    
+                    if (item.type === 'generated') {
+                        window.location.href = `generator.html?text=${encodeURIComponent(item.data)}`;
+                    } else {
+                        window.location.href = `scanner.html?rescan=${encodeURIComponent(item.data)}`;
+                    }
+                });
+            });
+            
+            // Add event listeners to delete buttons
+            document.querySelectorAll('.item-delete').forEach(btn => {
+                btn.addEventListener('click', (e) => {
+                    const index = e.target.getAttribute('data-index');
+                    const history = JSON.parse(localStorage.getItem('qrHistory') || '[]');
+                    history.splice(index, 1);
+                    localStorage.setItem('qrHistory', JSON.stringify(history));
+                    loadHistory(document.querySelector('input[name="filter"]:checked').value);
+                });
+            });
         }
-    }, 1000);
-    
-    adPopup.querySelector('.skip-ad').addEventListener('click', () => {
-        clearInterval(timer);
-        adPopup.remove();
-        if (callback) callback();
-    });
-}
+        
+        // Clear history
+        clearBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to clear all history?')) {
+                localStorage.removeItem('qrHistory');
+                loadHistory();
+            }
+        });
+        
+        // Filter history
+        filters.forEach(filter => {
+            filter.addEventListener('change', () => {
+                loadHistory(filter.value);
+            });
+        });
+        
+        // Initial load
+        loadHistory();
+    }
+});
