@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Help | Qrypt</title>
+    <link rel="stylesheet" href="assets/styles/main.css">
+    <link rel="manifest" href="manifest.json">
+</head>
+<body>
+    <!-- Page Loader -->
+    <div class="page-loader">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo" class="bouncing-logo">
+    </div>
+
+    <!-- Header -->
+    <header>
+        <div class="logo-container">
+            <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+            <h1>Qrypt</h1>
+        </div>
+        <button class="hamburger-menu">☰</button>
+    </header>
+
+    <!-- Hamburger Menu -->
+    <nav class="side-menu">
+        <button class="close-menu">×</button>
+        <ul>
+            <li><a href="index.html">Home</a></li>
+            <li><a href="generator.html">QR Generator</a></li>
+            <li><a href="scanner.html">QR Scanner</a></li>
+            <li><a href="help.html" class="active">Help</a></li>
+            <li><a href="usage.html">Usage</a></li>
+            <li><a href="history.html">History</a></li>
+            <li><a href="faqs.html">FAQs</a></li>
+            <li>
+                <div class="theme-toggle">
+                    <span>Dark Mode</span>
+                    <label class="switch">
+                        <input type="checkbox">
+                        <span class="slider round"></span>
+                    </label>
+                </div>
+            </li>
+        </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="help-page">
+        <h2>Help Center</h2>
+        <p class="page-description">Find solutions to common issues and learn how to make the most of Qrypt's features. Our help center provides detailed guides and troubleshooting tips for both QR code generation and scanning.</p>
+        
+        <div class="help-sections">
+            <section class="help-section">
+                <h3>QR Code Generator</h3>
+                <div class="help-content">
+                    <h4>How to generate a QR code</h4>
+                    <ol>
+                        <li>Navigate to the QR Generator page</li>
+                        <li>Enter your text or URL in the input field</li>
+                        <li>Click the "Generate QR Code" button</li>
+                        <li>Wait for the QR code to appear</li>
+                        <li>Download or share your QR code</li>
+                    </ol>
+                    
+                    <h4>Supported QR code content</h4>
+                    <ul>
+                        <li>Website URLs (https://example.com)</li>
+                        <li>Plain text messages</li>
+                        <li>Email addresses (mailto:example@example.com)</li>
+                        <li>Phone numbers (tel:+1234567890)</li>
+                        <li>SMS messages (sms:+1234567890?body=message)</li>
+                        <li>Wi-Fi network credentials</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="help-section">
+                <h3>QR Code Scanner</h3>
+                <div class="help-content">
+                    <h4>How to scan a QR code</h4>
+                    <ol>
+                        <li>Navigate to the QR Scanner page</li>
+                        <li>Choose "Use Camera" or "Upload Image"</li>
+                        <li>If using camera, point your device at the QR code</li>
+                        <li>If uploading, select an image containing the QR code</li>
+                        <li>Wait for the scanner to decode the QR code</li>
+                        <li>View the decoded content and take action</li>
+                    </ol>
+                    
+                    <h4>Troubleshooting scanning issues</h4>
+                    <ul>
+                        <li>Ensure good lighting when using camera</li>
+                        <li>Hold your device steady and focus on the QR code</li>
+                        <li>Clean your camera lens if image appears blurry</li>
+                        <li>Try uploading an image if camera scanning fails</li>
+                        <li>Check that the QR code isn't damaged or obscured</li>
+                    </ul>
+                </div>
+            </section>
+            
+            <section class="help-section">
+                <h3>Account & Settings</h3>
+                <div class="help-content">
+                    <h4>Managing your history</h4>
+                    <p>All generated and scanned QR codes are saved in your local history. You can view and manage this history from the History page.</p>
+                    
+                    <h4>Dark mode</h4>
+                    <p>Toggle between light and dark mode using the switch in the hamburger menu. Your preference will be remembered for future visits.</p>
+                </div>
+            </section>
+        </div>
+    </main>
+
+    <!-- Chat Buttons -->
+    <div class="chat-buttons">
+        <a href="https://wa.me/07012344763" class="whatsapp-btn">WhatsApp</a>
+        <a href="zangi://1073484140" class="zangi-btn">Zangi</a>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <p>© 2025 Qrypt. All rights reserved.</p>
+    </footer>
+
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt">
+        <img src="assets/QryptLogo.png" alt="Qrypt Logo">
+        <span>Install Qrypt App</span>
+        <button class="install-btn">Install</button>
+        <button class="cancel-install">×</button>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
